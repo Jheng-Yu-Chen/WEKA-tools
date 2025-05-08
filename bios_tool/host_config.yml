@@ -1,0 +1,25 @@
+hosts:
+  - name: 192.168.2.1
+    user: root
+    password: WekaService
+  - name: 192.168.2.2
+    user: root
+    password: WekaService
+  - name: 192.168.2.3
+    user: root
+    password: WekaService
+  - name: 192.168.2.4
+    user: root
+    password: WekaService
+  - name: 192.168.2.5
+    user: root
+    password: WekaService
+  - name: 192.168.2.6
+    user: root
+    password: WekaService
+  - name: 192.168.2.7
+    user: root
+    password: WekaService
+  - name: 192.168.2.8
+    user: root
+    password: WekaService

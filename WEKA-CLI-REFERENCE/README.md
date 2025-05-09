@@ -26,7 +26,8 @@ This repository automatically generates a fully structured JSON representation o
 ## 🛠️ How to use
 
 ### 1. Install requirements (Python 3.6+)
-No external libraries required (uses only `subprocess`, `re`, `json`).
+- WEKA CLI
+- No external python libraries required (uses only `subprocess`, `re`, `json`).
 
 ### 2. Run the generator script
 

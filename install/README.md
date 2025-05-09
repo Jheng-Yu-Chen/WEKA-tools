@@ -8,7 +8,6 @@ This directory contains diagnostic and configuration scripts to help verify Weka
 
 This script collects and displays per-container memory allocation and usage information on a Weka host.
 
-### ✔ Features
 - Displays host total memory and CPU core count (online/offline).
 - Lists memory statistics per Weka container:
   - Allocated memory (GB and %)
@@ -17,11 +16,6 @@ This script collects and displays per-container memory allocation and usage info
   - Number of assigned compute cores
   - Average memory usage per core
   - Non-Weka memory reservation percentage
-
-### 🛠 Dependencies
-- `jq`
-- `weka` CLI tools
-- Run as root or with access to `/proc` and Weka environment
 
 ### 📦 Output Example
 ```
@@ -44,9 +38,6 @@ This script verifies CPU power-saving and boost configurations via `cpupower`.
 - **C-state check**:
   - Ensures only basic idle states (e.g., POLL, C1) are available
 
-### 🛠 Requirements
-- `cpupower` installed and executable as root
-- System BIOS settings aligned with performance tuning (disable deep C-states and boost)
 
 ### 📦 Output Example
 ```

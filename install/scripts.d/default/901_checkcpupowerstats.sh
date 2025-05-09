@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DESCRIPTION="Checking CPU P-state and C-state configuration"
+DESCRIPTION="Checking CPU C-state and P-state configuration"
 SCRIPT_TYPE="parallel"
 
 check_pstates() {

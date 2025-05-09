@@ -8,6 +8,7 @@ raw_mode_support=0
 # is $0:
 # example.sh: Error encountered
 #             More error info here
+
 error_indent=$(for i in $(seq 1 "${#0}"); do printf ' '; done)
 
 script_name=$(basename "$0")

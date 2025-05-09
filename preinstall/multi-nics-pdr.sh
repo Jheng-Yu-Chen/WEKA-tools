@@ -1,17 +1,17 @@
 #!/bin/bash
 
 ### Examples ###
-#[root@swafs01 ~]# yum install NetworkManager-config-routing-rules iproute -y
-#[root@swafs01 ~]# systemctl enable NetworkManager-dispatcher.service --now
+#[root@weka01 ~]# yum install NetworkManager-config-routing-rules iproute -y
+#[root@weka01 ~]# systemctl enable NetworkManager-dispatcher.service --now
 #
-#[root@swafs01 ~]# ip -br addr show enp1s15
+#[root@weka01 ~]# ip -br addr show enp1s15
 #enp1s15          UP             172.21.102.163/22
-#[root@swafs01 ~]# grep enp1s15 /etc/iproute2/rt_tables
+#[root@weka01 ~]# grep enp1s15 /etc/iproute2/rt_tables
 #1018 enp1s15
-#[root@swafs01 ~]# cat /etc/sysconfig/network-scripts/route-enp1s15
+#[root@weka01 ~]# cat /etc/sysconfig/network-scripts/route-enp1s15
 #172.21.102.0/22 dev enp1s15 src 172.21.102.163 table enp1s15
 #default via 172.21.102.163 dev enp1s15 table enp1s15
-#[root@swafs01 ~]# cat /etc/sysconfig/network-scripts/rule-enp1s15
+#[root@weka01 ~]# cat /etc/sysconfig/network-scripts/rule-enp1s15
 #table enp1s15 from 172.21.102.163
 ###
 

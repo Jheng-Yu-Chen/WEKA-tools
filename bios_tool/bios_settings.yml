@@ -92,7 +92,7 @@ Lenovo:
     OperatingModes_ChooseOperatingMode: CustomMode
     LegacyBIOS_LegacyBIOS: Disabled
     Processors_SOCP_states: P0
-### for ASUS RS500A-E12-RS12U
+### for AMI and ASUS RS500A-E12-RS12U
 Ami:
   AMD:
     CbsCmnGnbNbIOMMU: CbsCmnGnbNbIOMMUAuto

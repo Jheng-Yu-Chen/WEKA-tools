@@ -155,7 +155,7 @@ except Exception as e:
     version_out = f"Error: {e}"
 
 try:
-    build_out = subprocess.check_output("weka --build", shell=True, text=True).strip()
+    build_out = subprocess.check_output("weka --build", shell=True, universal_newlines=True).strip()
 except Exception as e:
     build_out = f"Error: {e}"
 

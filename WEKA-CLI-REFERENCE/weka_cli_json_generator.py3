@@ -6,7 +6,7 @@ visited = set()
 
 def run_help(command):
     try:
-        output = subprocess.check_output(command + " --help", stderr=subprocess.STDOUT, shell=True, text=True)
+        output = subprocess.check_output(command + " --help", stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
         return output
     except subprocess.CalledProcessError as e:
         return e.output
@@ -150,7 +150,7 @@ if debug_result:
 
 # 版本與 build
 try:
-    version_out = subprocess.check_output("weka --version", shell=True, text=True).strip()
+    version_out = subprocess.check_output("weka --version", shell=True, universal_newlines=True).strip()
 except Exception as e:
     version_out = f"Error: {e}"
 

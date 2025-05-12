@@ -1,6 +1,6 @@
 {
     "version": "Weka CLI build 4.3.5.105",
-    "build": "Error: __init__() got an unexpected keyword argument 'text'",
+    "build": "c069f99a59b0988dc1bc69a702b9f52036b92675",
     "weka": {
         "description": "The base command for all weka related CLIs",
         "usage": [

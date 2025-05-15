@@ -21,10 +21,6 @@ go build -o gohomecli ./cmd/homecli
 cp gohomecli /usr/local/bin/homecli
 ```
 
----
-
-## ⚙️ Configuration
-
 ### 4. List configured sites
 This will create or reference your config at `~/.config/home-cli/config.toml`:
 
@@ -37,10 +33,6 @@ Replace `<token>` with your actual API key:
 ```bash
 sed -i '' 's/api_key = """"/api_key = ""<token>""/g' ~/.config/home-cli/config.toml
 ```
-
----
-
-## 📊 Export Analytics Data
 
 ### 6. Dump all analytics into a file
 ```bash

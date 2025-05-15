@@ -76,9 +76,3 @@ This will print:
 
 > Wildcards are supported using Unix-style `*` matching.
 
----
-
-## 📎 Reference
-
-- GitHub Repository: [https://github.com/weka/gohomecli](https://github.com/weka/gohomecli)
-- Weka Home Portal: [https://home.weka.io](https://home.weka.io)

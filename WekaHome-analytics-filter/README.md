@@ -53,7 +53,7 @@ This exports all available analytics data to `all-analytics.json`.
 
 ## 🔍 Filter Analytics with `analytics-filter.py`
 
-We provide a helper script `analytics-filter.py` to filter the exported analytics JSON by:
+This is a helper script `analytics-filter.py` to filter the exported analytics JSON by:
 
 - Kernel version pattern
 - OS name pattern

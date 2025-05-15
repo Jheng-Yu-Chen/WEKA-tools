@@ -76,7 +76,7 @@ python3 filter_json.py 20250515-analytics.json --os "SUSE*" --kernel "5.*" --rel
 | Option       | Description                            | Example                 |
 |--------------|----------------------------------------|-------------------------|
 | `--kernel`   | Match kernel release (wildcard allowed) | `--kernel "4.18.*"`    |
-| `--os`       | Match OS name                          | `--os "CentOS*"`       |
+| `--os`       | Match OS name                          | `--os "rocky*"`       |
 | `--release`  | Match software version                 | `--release "4.2.*"`    |
 | `--ofed`     | Match OFED version                     | `--ofed "5.1*"`        |
 | `--platform` | Match hardware platform type           | `--platform "x86_64"`  |

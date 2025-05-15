@@ -2,6 +2,11 @@
 
 ---
 
+## 🛠️ Requirements
+
+- Python 3.6+
+
+
 ## 🔧 Prerequisites and Setup (macOS)
 
 ### 1. Install Go
@@ -45,26 +50,37 @@ This exports all available analytics data to `all-analytics.json`.
 
 ## 🔍 Filter Analytics with `analytics-filter.py`
 
-This is a helper script `analytics-filter.py`, requires Python 3.7+, to filter the exported analytics JSON by:
+This script parses a JSON file exported from WEKA analytics and provides filtering and summary reports for host information such as kernel version, OS name, OFED version, platform type, and mode.
 
-- Kernel version pattern
-- OS name pattern
-- Release version pattern
+## ✅ Features
 
-### Usage
+- Pattern-based filtering (wildcard `*` support)
+- Case-insensitive matching
+- Dynamically ordered summary and combination statistics
+- Multiple metadata fields supported
+
+## 🧾 Usage
+
 ```bash
-python3 analytics-filter.py all-analytics.json --kernel "4.18.*" --os "CentOS*" --release "4.2.*"
-
-python3 analytics-filter.py all-analytics.json
+python3 filter_json.py <json_file> [--kernel <pattern>] [--os <pattern>] [--release <pattern>] [--ofed <pattern>] [--platform <pattern>] [--mode <pattern>]
 ```
 
-This will print:
+### Example
 
-- Matched host count
-- Top kernel versions
-- Top OS names
-- Top release versions
-- Combination statistics
+```bash
+python3 filter_json.py 20250515-analytics.json --os "SUSE*" --kernel "5.*" --release "4.2.*"
+```
 
-> Wildcards are supported using Unix-style `*` matching.
+### Supported Options
+
+| Option       | Description                            | Example                 |
+|--------------|----------------------------------------|-------------------------|
+| `--kernel`   | Match kernel release (wildcard allowed) | `--kernel "4.18.*"`    |
+| `--os`       | Match OS name                          | `--os "CentOS*"`       |
+| `--release`  | Match software version                 | `--release "4.2.*"`    |
+| `--ofed`     | Match OFED version                     | `--ofed "5.1*"`        |
+| `--platform` | Match hardware platform type           | `--platform "x86_64"`  |
+| `--mode`     | Match host mode                        | `--mode "backend"`     |
+
+> All filters are optional. Default value for each is `*`.
 

@@ -62,13 +62,13 @@ This script parses a JSON file exported from WEKA analytics and provides filteri
 ## 🧾 Usage
 
 ```bash
-python3 filter_json.py <json_file> [--kernel <pattern>] [--os <pattern>] [--release <pattern>] [--ofed <pattern>] [--platform <pattern>] [--mode <pattern>]
+python3 analytics-filter.py <json_file> [--kernel <pattern>] [--os <pattern>] [--release <pattern>] [--ofed <pattern>] [--platform <pattern>] [--mode <pattern>]
 ```
 
 ### Example
 
 ```bash
-python3 filter_json.py all-analytics.json --os "SUSE*" --kernel "5.*" --release "4.2.*"
+python3 analytics-filter.py all-analytics.json --os "SUSE*" --kernel "5.*" --release "4.2.*"
 ```
 
 ### Supported Options

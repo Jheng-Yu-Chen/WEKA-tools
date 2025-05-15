@@ -68,7 +68,7 @@ python3 filter_json.py <json_file> [--kernel <pattern>] [--os <pattern>] [--rele
 ### Example
 
 ```bash
-python3 filter_json.py 20250515-analytics.json --os "SUSE*" --kernel "5.*" --release "4.2.*"
+python3 filter_json.py all-analytics.json --os "SUSE*" --kernel "5.*" --release "4.2.*"
 ```
 
 ### Supported Options

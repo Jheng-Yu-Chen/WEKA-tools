@@ -55,5 +55,5 @@ After execution, a log file will be generated in the format:
 YYYYMMDD-HHMMSS-warp-benchmark.log
 ```
 
-This file contains the benchmark results with throughput and latency metrics for each test.
+This file contains the benchmark results with throughput metrics for each test.
 

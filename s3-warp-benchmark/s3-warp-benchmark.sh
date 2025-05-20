@@ -28,6 +28,7 @@ fi'\'''
 for size in $(sed 's/,/ /g' <<< ${object_size})
 do
   action=put
+  date
   echo "Action: $action , Object Size: $size, Duration: $duation, Concurrent: $concurrent" | tee -a $date_time-warp-benchmark.log
   warp $action \
     --warp-client $warp_client \
@@ -46,6 +47,7 @@ done
 for size in $(sed 's/,/ /g' <<< ${object_size})
 do
   action=get
+  date
   echo "Action: $action , Object Size: $size, Duration: $duation, Concurrent: $concurrent" | tee -a $date_time-warp-benchmark.log
   warp $action \
     --warp-client $warp_client \
@@ -63,6 +65,7 @@ done
 for size in $(sed 's/,/ /g' <<< ${object_size})
 do
   action=stat
+  date
   echo "Action: $action , Object Size: $size, Duration: $duation, Concurrent: $concurrent" | tee -a $date_time-warp-benchmark.log
   warp $action \
     --warp-client $warp_client \
@@ -79,6 +82,7 @@ done
 
 ### This action will clean up objects that start with warp in the bucket.
 action=list
+date
 echo "Action: $action , Object Size: 1KiB(default), Duration: $duation, Concurrent: $concurrent" | tee -a $date_time-warp-benchmark.log
 warp $action \
   --warp-client $warp_client \

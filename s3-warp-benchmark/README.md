@@ -25,7 +25,7 @@ The `s3-warp-benchmark.sh` script does the following:
 1. Starts Warp clients on a list of remote nodes using `tmux`
 2. Runs `put`, `get`, and `stat` operations across a defined object size set
 3. Logs results into a timestamped log file
-4. Performs a `warp list` operation, and cleanup all objects on the bucket.
+4. Performs a `warp list` operation, and cleanup all objects on the bucket
 5. Stops all remote Warp clients after benchmarking
 
 ## Configuration

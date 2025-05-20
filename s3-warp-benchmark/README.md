@@ -6,7 +6,7 @@ This repository provides a benchmarking script for evaluating S3-compatible obje
 
 > The final `warp list` cleanup stage will remove all the objects on the test bucket.
 >
-> **DO NOT use this script on buckets actively used for storing critical data.**
+> **DO NOT use this script on buckets actively used for storing data.**
 
 ## Prerequisites
 

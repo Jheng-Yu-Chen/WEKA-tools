@@ -93,8 +93,7 @@ warp $action \
   --bucket $bucket \
   --duration $duation \
   --concurrent $concurrent \
-  --prefix warp/ \
-  $param|  grep -A 100 "Throughput" | sed 's|^|\t|g' | tee -a $date_time-warp-benchmark.log
+  --prefix warp/ $param |  grep -A 100 "Throughput" | sed 's|^|\t|g' | tee -a $date_time-warp-benchmark.log
 
 PDSH_SSH_ARGS_APPEND="-o StrictHostKeyChecking=no" \
 pdsh -w $warp_client \

@@ -26,7 +26,7 @@ else
   echo "$(hostname): warp client already running"
 fi'\'''
 
-for size in $(sed 's/,/ /g' <<< ${object_size})
+for size in $(sed 's/,/ /g' <<< "$object_size")
 do
   action=put
   date
@@ -45,7 +45,7 @@ do
     --noclear $param |  grep -A 100 "Throughput" | sed 's|^|\t|g' | tee -a $date_time-warp-benchmark.log
 done
 
-for size in $(sed 's/,/ /g' <<< ${object_size})
+for size in $(sed 's/,/ /g' <<< "$object_size")
 do
   action=get
   date
@@ -63,7 +63,7 @@ do
     --noclear $param |  grep -A 100 "Throughput" | sed 's|^|\t|g' | tee -a $date_time-warp-benchmark.log
 done
 
-for size in $(sed 's/,/ /g' <<< ${object_size})
+for size in $(cut -d',' -f1 <<< "$object_size")
 do
   action=stat
   date
@@ -82,18 +82,22 @@ do
 done
 
 ### This action will clean up objects that start with warp in the bucket.
-action=list
-date
-echo "Action: $action , Object Size: 1KiB(default), Duration: $duation, Concurrent: $concurrent" | tee -a $date_time-warp-benchmark.log
-warp $action \
-  --warp-client $warp_client \
-  --host  $warp_host\
-  --access-key $access_key \
-  --secret-key $secret_key \
-  --bucket $bucket \
-  --duration $duation \
-  --concurrent $concurrent \
-  --prefix warp/ $param |  grep -A 100 "Throughput" | sed 's|^|\t|g' | tee -a $date_time-warp-benchmark.log
+for size in $(cut -d',' -f1 <<< "$object_size")
+do
+  action=list
+  date
+  echo "Action: $action , Object Size: 1KiB(default), Duration: $duation, Concurrent: $concurrent" | tee -a $date_time-warp-benchmark.log
+  warp $action \
+    --warp-client $warp_client \
+    --host  $warp_host\
+    --access-key $access_key \
+    --secret-key $secret_key \
+    --bucket $bucket \
+    --obj.size $size \
+    --duration $duation \
+    --concurrent $concurrent \
+    --prefix warp/ $param |  grep -A 100 "Throughput" | sed 's|^|\t|g' | tee -a $date_time-warp-benchmark.log
+done
 
 PDSH_SSH_ARGS_APPEND="-o StrictHostKeyChecking=no" \
 pdsh -w $warp_client \

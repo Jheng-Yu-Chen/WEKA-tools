@@ -15,7 +15,7 @@ This repository provides a benchmarking script for evaluating S3-compatible obje
 ## Prerequisites
 
 - [Warp](https://github.com/minio/warp) v1.1.4 or later
-  - Download latest version from [warp release](https://github.com/minio/warp/releases) 
+  - Download the latest version from [warp release](https://github.com/minio/warp/releases) 
 - `pdsh` (for parallel SSH)
 - `tmux` (must be installed on all remote clients)
 

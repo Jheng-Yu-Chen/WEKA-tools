@@ -86,7 +86,7 @@ for size in $(cut -d',' -f1 <<< "$object_size")
 do
   action=list
   date
-  echo "Action: $action , Object Size: 1KiB(default), Duration: $duation, Concurrent: $concurrent" | tee -a $date_time-warp-benchmark.log
+  echo "Action: $action , Object Size: $size, Duration: $duation, Concurrent: $concurrent" | tee -a $date_time-warp-benchmark.log
   warp $action \
     --warp-client $warp_client \
     --host  $warp_host\

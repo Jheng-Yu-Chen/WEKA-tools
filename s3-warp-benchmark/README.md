@@ -4,11 +4,9 @@ This repository provides a benchmarking script for evaluating S3-compatible obje
 
 ## ⚠️ WARNING
 
-> **⚠️ SEVERE WARNING: DO NOT use this script on a production or in-use S3 bucket!**
+> **⚠️ WARNING: DO NOT use this script on a production or in-use S3 bucket!**
 >
 > The final `warp list` cleanup stage will remove all the objects on the test bucket.
->
-> If run against a bucket that contains production or important data, **you risk losing all objects under that bucket**.
 >
 > **DO NOT use this script on buckets actively used for storing critical data.**
 

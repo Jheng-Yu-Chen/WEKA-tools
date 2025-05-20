@@ -21,7 +21,7 @@ PDSH_SSH_ARGS_APPEND="-o StrictHostKeyChecking=no" \
 pdsh -w "$warp_client" \
 'bash -c '\''if ! tmux has-session -t warp 2>/dev/null; then
   echo "$(hostname): Starting warp client...";
-  tmux new-session -d -s warp "warp client"
+  cd /tmp ; tmux new-session -d -s warp "warp client"
 else
   echo "$(hostname): warp client already running"
 fi'\'''

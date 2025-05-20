@@ -3,7 +3,7 @@
 ### Comma seperated list
 warp_client="10.220.104.2,10.220.104.4,10.220.104.6"
 warp_host="10.220.104.44:9000,10.220.104.42:9000,10.220.104.40:9000"
-object_size="4KiB,16MiB"
+object_size="1KiB,16MiB"
 ###
 
 access_key="access_key"

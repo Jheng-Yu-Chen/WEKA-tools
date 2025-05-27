@@ -62,7 +62,7 @@ This script parses a JSON file exported from WEKA analytics and provides filteri
 ## 🧾 Usage
 
 ```bash
-python3 analytics-filter.py <json_file> [--kernel <pattern>] [--os <pattern>] [--release <pattern>] [--ofed <pattern>] [--platform <pattern>] [--mode <pattern>]
+python3 analytics-filter.py <json_file> [--kernel <pattern>] [--os <pattern>] [--release <pattern>] [--ofed <pattern>] [--platform <pattern>] [--mode <pattern>] [--customer <pattern>]
 ```
 
 ### Example
@@ -81,6 +81,7 @@ python3 analytics-filter.py all-analytics.json --os "SUSE*" --kernel "5.*" --rel
 | `--ofed`     | Match OFED version                     | `--ofed "5.1*"`        |
 | `--platform` | Match hardware platform type           | `--platform "x86_64"`  |
 | `--mode`     | Match host mode                        | `--mode "backend"`     |
+| `--customer` | Match customer name                    | `--customer "*"`       |
 
 > All filters are optional. Default value for each is `*`.
 

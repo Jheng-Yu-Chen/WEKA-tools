@@ -18,7 +18,7 @@ This repository automatically generates a fully structured JSON representation o
 
 | File | Description |
 |------|-------------|
-| `weka_cli_json_generator.py` | Python script to recursively collect and parse `weka` CLI structure |
+| `weka-cli-json-generator.py` | Python script to recursively collect and parse `weka` CLI structure |
 | `weka_cli_{version}.json` | Generated command tree from `weka --help` command  |
 
 ---
@@ -27,14 +27,13 @@ This repository automatically generates a fully structured JSON representation o
 
 ### 1. Install requirements (Python 3.6+)
 - WEKA CLI
-- No external python libraries required (uses only `subprocess`, `re`, `json`).
 
 ### 2. Run the generator script
 
 - Outputs version-specific JSON files like: `weka_cli_4.2.17.77.json`
   
 ```bash
-python3 weka_cli_json_generator.py
+python3 weka-cli-json-generator.py
 ```
 
 

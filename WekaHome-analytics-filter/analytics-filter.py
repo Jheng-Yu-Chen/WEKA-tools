@@ -19,6 +19,7 @@ def parse_args():
     parser.add_argument("--platform", default="*", help="Platform pattern (e.g., x86_64, aarch64)")
     parser.add_argument("--mode", default="*", help="Mode pattern (e.g., client, backend)")
     parser.add_argument("--customer", default="*", help="Customer Name")
+    parser.add_argument("--cluster", default="*", help="Cluster Name")
     return parser.parse_args(), sys.argv
 
 def main():
@@ -31,6 +32,7 @@ def main():
     show_platform = "--platform" in raw_args
     show_mode = "--mode" in raw_args
     show_customer = "--customer" in raw_args
+    show_cluster = "--cluster" in raw_args
 
     flag_map = {
         "--kernel": "kernel",
@@ -39,7 +41,8 @@ def main():
         "--ofed": "ofed",
         "--platform": "platform",
         "--mode": "mode",
-        "--customer": "customer"
+        "--customer": "customer",
+        "--cluster": "cluster"
     }
     combo_order = [flag_map[arg] for arg in raw_args if arg in flag_map]
 
@@ -54,6 +57,7 @@ def main():
                 continue
 
             customer = obj.get("_meta", {}).get("customer_name", "")
+            cluster = obj.get("cluster", {}).get("name", "")
 
             hosts = obj.get("host", {}).get("hosts", [])
             for host in hosts:
@@ -73,7 +77,8 @@ def main():
                     match(ofed, args.ofed) and
                     match(platform, args.platform) and
                     match(mode, args.mode) and
-                    match(customer, args.customer)
+                    match(customer, args.customer) and
+                    match(cluster, args.cluster)
                 ):
                     matched.append({
                         "kernel": kernel,
@@ -82,7 +87,8 @@ def main():
                         "ofed": ofed,
                         "platform": platform,
                         "mode": mode,
-                        "customer": customer
+                        "customer": customer,
+                        "cluster": cluster
                     })
 
     print(f"\U0001F50D Filtering:")
@@ -100,6 +106,8 @@ def main():
         print(f"  - Mode           : {args.mode}")
     if show_customer:
         print(f"  - Customer       : {args.customer}")
+    if show_cluster:
+        print(f"  - Cluster name   : {args.cluster}")
 
     print(f"\n\U0001F4CA Matched: {len(matched)} / {total} hosts")
 

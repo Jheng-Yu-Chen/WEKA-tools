@@ -2,6 +2,11 @@
 
 This repository includes a preconfigured Grafana dashboard and alert rules to monitor WEKA from Local WEKA Home.
 
+## Prerequisites
+
+* Local WEKA Home v3.2.15.
+* Configure and enable LWH Grafana smtp.
+
 ## 📦 Files Included
 
 | File                                 | Description                                |

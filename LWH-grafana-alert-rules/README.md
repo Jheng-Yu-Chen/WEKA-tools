@@ -1,6 +1,6 @@
 # WEKA Alerts Dashboard & Alert Rule (LWH - Grafana)
 
-This repository includes a preconfigured Grafana dashboard and alert rules to monitor WEKA from Local WEKA Home Grafana.
+This repository includes a preconfigured Grafana dashboard and alert rules to monitor WEKA from Local WEKA Home.
 
 ## 📦 Files Included
 
@@ -35,3 +35,34 @@ This repository includes a preconfigured Grafana dashboard and alert rules to mo
 * Alert Rules
 ![Alert Rules](images/2-weka-alert-rules.png)
 
+
+---
+
+## Alert panel's query syntax
+
+* weka status
+  - datasource: `Postgres`
+  ```
+  SELECT
+    CASE COALESCE(analytics->>'status', 'NO ANALYTICS')
+         WHEN 'OK'                  THEN 0
+         WHEN 'UNINITIALIZED'       THEN 1
+         WHEN 'REDISTRIBUTING'      THEN 2
+         WHEN 'REBUILDING'          THEN 3
+         WHEN 'PARTIALLY_PROTECTED' THEN 4
+         WHEN 'UNPROTECTED'         THEN 5
+         WHEN 'UNAVAILABLE'         THEN 6
+         ELSE 9
+    END AS status_num
+  FROM clusters
+  LEFT JOIN flattened_analytics fa ON clusters.id = fa.cluster_id;
+  ```
+
+* weka alerts
+  - datasource: `Postgres`
+  ```
+  SELECT count(*) AS "ALERTS" 
+    FROM alerts 
+    WHERE muted IS false 
+      AND timestamp >= now() - interval '5 minutes'
+  ```

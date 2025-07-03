@@ -62,7 +62,7 @@ This script parses a JSON file exported from WEKA analytics and provides filteri
 ## 🧾 Usage
 
 ```bash
-python3 analytics-filter.py <json_file> [--kernel <pattern>] [--os <pattern>] [--release <pattern>] [--ofed <pattern>] [--platform <pattern>] [--mode <pattern>] [--customer <pattern>]
+python3 analytics-filter.py <json_file> [--kernel <pattern>] [--os <pattern>] [--release <pattern>] [--ofed <pattern>] [--platform <pattern>] [--mode <pattern>] [--customer <pattern>] [--cpu_is_dedicated true|false|udp]
 ```
 
 ### Example
@@ -83,6 +83,7 @@ python3 analytics-filter.py all-analytics.json --os "SUSE*" --kernel "5.*" --rel
 | `--mode`     | Match host mode                        | `--mode "backend"`     |
 | `--customer` | Match customer name                    | `--customer "*"`       |
 | `--cluster`  | Match cluster name                     | `--cluster "*"`        |
+| `--cpu_is_dedicated`  | Filter CPU dedicate mode       | `--cpu_is_dedicated "true|false|udp"`        |
 
 > All filters are optional. Default value for each is `*`.
 

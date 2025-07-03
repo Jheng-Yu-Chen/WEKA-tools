@@ -83,7 +83,7 @@ python3 analytics-filter.py all-analytics.json --os "SUSE*" --kernel "5.*" --rel
 | `--mode`     | Match host mode                        | `--mode "backend"`     |
 | `--customer` | Match customer name                    | `--customer "*"`       |
 | `--cluster`  | Match cluster name                     | `--cluster "*"`        |
-| `--cpu_is_dedicated`  | Filter CPU dedicate mode       | `--cpu_is_dedicated "true|false|udp"`        |
+| `--cpu_is_dedicated`  | Filter CPU dedicate mode       | `--cpu_is_dedicated "true\|false\|udp"`        |
 
 > All filters are optional. Default value for each is `*`.
 

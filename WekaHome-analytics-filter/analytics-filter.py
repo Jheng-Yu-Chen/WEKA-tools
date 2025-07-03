@@ -64,9 +64,9 @@ def main():
     
     # Define mapping for 'true'/'false'/'udp' values for display
     cpu_dedicated_display_map = {
-        'true': 'cpu_is_dedicated',
-        'false': 'cpu_is_non-dedicated',
-        'udp': 'cpu_is_udp'
+        'true': 'dpdk_cpu_is_dedicated',
+        'false': 'dpdk_cpu_is_non-dedicated',
+        'udp': 'udp_mode'
     }
 
     # Determine the order of combination fields based on user input

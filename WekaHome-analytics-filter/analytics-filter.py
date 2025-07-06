@@ -21,6 +21,8 @@ def parse_args():
     parser.add_argument("--customer", default="*", help="Customer Name")
     parser.add_argument("--cluster", default="*", help="Cluster Name")
     parser.add_argument("--cpu_is_dedicated", type=str, choices=['true', 'false', 'udp'], help="Filter by CPU dedicated status of nodes (true/false/udp)")
+    parser.add_argument("--cluster_name", default="*", help="Filter by cluster.name (e.g., my_cluster_name)")
+    parser.add_argument("--net_device", default="*", help="Filter by network device name (e.g., MT28908*)") # Updated help message
     return parser.parse_args(), sys.argv
 
 def main():
@@ -36,6 +38,8 @@ def main():
     show_customer = "--customer" in raw_args
     show_cluster = "--cluster" in raw_args
     show_cpu_is_dedicated = "--cpu_is_dedicated" in raw_args
+    show_cluster_name = "--cluster_name" in raw_args
+    show_net_device = "--net_device" in raw_args
 
     flag_map = {
         "--kernel": "kernel",
@@ -46,7 +50,9 @@ def main():
         "--mode": "mode",
         "--customer": "customer",
         "--cluster": "cluster",
-        "--cpu_is_dedicated": "cpu_is_dedicated_status"
+        "--cpu_is_dedicated": "cpu_is_dedicated_status",
+        "--cluster_name": "cluster_name",
+        "--net_device": "net_device_name" # Changed internal key for clarity
     }
 
     # Define display labels for output
@@ -59,7 +65,9 @@ def main():
         "mode": "Mode",
         "customer": "Customer",
         "cluster": "Cluster Name",
-        "cpu_is_dedicated_status": "CPU Dedicated"
+        "cpu_is_dedicated_status": "CPU Dedicated",
+        "cluster_name": "Cluster Name",
+        "net_device_name": "Network Device Name" # Updated display label
     }
     
     # Define mapping for 'true'/'false'/'udp' values for display
@@ -83,7 +91,7 @@ def main():
                 continue
 
             customer = obj.get("_meta", {}).get("customer_name", "")
-            cluster = obj.get("cluster", {}).get("name", "")
+            cluster_name_field = obj.get("cluster", {}).get("name", "")
 
             # Store hosts and nodes in lookup dictionaries for easier access
             hosts_by_id = {h['id']: h for h in obj.get("host", {}).get("hosts", [])}
@@ -93,6 +101,15 @@ def main():
                 if host_id not in nodes_by_host_id:
                     nodes_by_host_id[host_id] = []
                 nodes_by_host_id[host_id].append(node)
+            
+            # Store net devices by host_id
+            net_devices_by_host_id = {}
+            for net_device in obj.get("netdevice", {}).get("network_devices", []):
+                host_id = net_device.get('host_id')
+                if host_id not in net_devices_by_host_id:
+                    net_devices_by_host_id[host_id] = []
+                net_devices_by_host_id[host_id].append(net_device)
+
 
             for host_id, host_data in hosts_by_id.items():
                 total += 1
@@ -103,6 +120,7 @@ def main():
                 release = host_data.get("software_version", "")
                 ofed = host_data.get("host_ofed_version", "")
                 mode = host_data.get("mode", "")
+                cluster = obj.get("cluster", {}).get("name", "")
 
                 # Apply existing filters to host data
                 if not (
@@ -117,42 +135,74 @@ def main():
                 ):
                     continue
 
-                # Apply new cpu_is_dedicated filter logic if specified
+                # Apply --cluster_name filter
+                if not match(cluster_name_field, args.cluster_name):
+                    continue
+
+                # Check if this host has any non-MANAGEMENT nodes (for net_device filter's exclusion)
+                host_has_non_management_node = False
+                associated_nodes_for_host = nodes_by_host_id.get(host_id, [])
+                for node_data in associated_nodes_for_host:
+                    if "MANAGEMENT" not in node_data.get('roles', []):
+                        host_has_non_management_node = True
+                        break
+
+                # Apply --net_device filter logic if specified
+                passed_net_device_filter = True
+                matched_net_device_name_value = "" # To store the matched device name for output
+                if args.net_device is not None:
+                    if not host_has_non_management_node: # If all nodes on this host are MANAGEMENT, it fails this filter
+                        passed_net_device_filter = False
+                    else:
+                        # Now check network device name
+                        host_has_matching_net_device_name = False
+                        associated_net_devices = net_devices_by_host_id.get(host_id, [])
+                        for net_device_data in associated_net_devices:
+                            net_device_name = net_device_data.get('device', '') # Changed from 'driver' to 'device'
+                            if match(net_device_name, args.net_device):
+                                host_has_matching_net_device_name = True
+                                matched_net_device_name_value = net_device_name # Capture the value
+                                break
+                        if not host_has_matching_net_device_name:
+                            passed_net_device_filter = False
+
+                if not passed_net_device_filter:
+                    continue
+
+
+                # Apply cpu_is_dedicated filter logic if specified
                 passed_cpu_dedicated_filter = True
                 if args.cpu_is_dedicated is not None:
                     filter_type = args.cpu_is_dedicated.lower()
-                    host_has_matching_node = False
+                    host_has_matching_node_for_cpu_dedication = False
                     
-                    associated_nodes = nodes_by_host_id.get(host_id, [])
-                    for node_data in associated_nodes:
+                    for node_data in associated_nodes_for_host:
                         node_roles = node_data.get('roles', [])
-                        # Exclude nodes with 'MANAGEMENT' role
                         if "MANAGEMENT" in node_roles:
                             continue
 
-                        node_is_dpdk = node_data.get('is_dpdk') # Get is_dpdk attribute for all cases
+                        node_is_dpdk = node_data.get('is_dpdk')
                         
                         if filter_type == 'true':
                             target_cpu_dedicated_bool = True
                             node_cpu_dedicated_val = node_data.get('cpu_is_dedicated')
                             if (node_cpu_dedicated_val is not None and node_cpu_dedicated_val == target_cpu_dedicated_bool) and \
-                                (node_is_dpdk is not None and node_is_dpdk == True): # is_dpdk must be true for 'true'
-                                host_has_matching_node = True
+                               (node_is_dpdk is not None and node_is_dpdk == True):
+                                host_has_matching_node_for_cpu_dedication = True
                                 break
                         elif filter_type == 'false':
                             target_cpu_dedicated_bool = False
                             node_cpu_dedicated_val = node_data.get('cpu_is_dedicated')
                             if (node_cpu_dedicated_val is not None and node_cpu_dedicated_val == target_cpu_dedicated_bool) and \
-                                (node_is_dpdk is not None and node_is_dpdk == True): # is_dpdk must be true for 'false'
-                                host_has_matching_node = True
+                               (node_is_dpdk is not None and node_is_dpdk == True):
+                                host_has_matching_node_for_cpu_dedication = True
                                 break
                         elif filter_type == 'udp':
-                            # For 'udp', filter condition is roles without MANAGEMENT AND is_dpdk is false
                             if node_is_dpdk is not None and node_is_dpdk == False:
-                                host_has_matching_node = True
+                                host_has_matching_node_for_cpu_dedication = True
                                 break
                     
-                    if not host_has_matching_node:
+                    if not host_has_matching_node_for_cpu_dedication:
                         passed_cpu_dedicated_filter = False
                 
                 if not passed_cpu_dedicated_filter:
@@ -166,12 +216,15 @@ def main():
                     "platform": platform,
                     "mode": mode,
                     "customer": customer,
-                    "cluster": cluster
+                    "cluster": cluster,
+                    "cluster_name": cluster_name_field
                 }
                 
-                # Store the displayed string for cpu_is_dedicated_status if filter was applied
                 if args.cpu_is_dedicated is not None:
                     matched_entry["cpu_is_dedicated_status"] = cpu_dedicated_display_map.get(args.cpu_is_dedicated.lower(), args.cpu_is_dedicated.lower())
+                
+                if args.net_device is not None:
+                    matched_entry["net_device_name"] = matched_net_device_name_value # Add the captured device name
                 
                 matched.append(matched_entry)
 
@@ -191,7 +244,11 @@ def main():
     if show_customer:
         print(f"  - Customer         : {args.customer}")
     if show_cluster:
-        print(f"  - Cluster name     : {args.cluster}")
+        print(f"  - Cluster          : {args.cluster}")
+    if show_cluster_name:
+        print(f"  - Cluster Name     : {args.cluster_name}")
+    if show_net_device:
+        print(f"  - Network Device   : {args.net_device}") # Display for new parameter
     if show_cpu_is_dedicated:
         print(f"  - CPU Dedicated    : {cpu_dedicated_display_map.get(args.cpu_is_dedicated.lower(), args.cpu_is_dedicated.lower())}")
 
@@ -201,7 +258,7 @@ def main():
         counter = Counter(m.get(key, '') for m in matched)
         if counter:
             label_to_print = display_label_map.get(key, key.capitalize())
-            if key in ["kernel", "ofed", "platform", "release"]:
+            if key in ["kernel", "ofed", "platform", "release", "net_device_name"]: # Changed key here
                 print(f"\n\U0001F4CE Top {label_to_print} Versions:")
             elif key == "cpu_is_dedicated_status":
                 print(f"\n\U0001F4CE Top {label_to_print} Status:")

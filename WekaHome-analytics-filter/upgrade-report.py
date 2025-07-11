@@ -234,7 +234,7 @@ def generate_and_print_report(history_data, token, site):
         
         print(f"\nProcessing upgrade for '{cluster_name}' ({job_key[0]}) from version {job_key[1]}...")
         
-        start_dt_events = start_dt_overall if start_entry else end_dt_events - datetime.timedelta(days=2) # Default to 2 days if start is missing
+        start_dt_events = start_dt_overall if start_entry else end_dt_events - datetime.timedelta(days=3) # Default to 3 days if start is missing
         events_end_dt = end_dt_events
         
         # We still need to call get_upgrade_events to calculate stage durations
@@ -346,8 +346,8 @@ def print_history_only(history_data):
         else:
             history_timestamp_display = "N/A"
         
-        source_display = source_version.split(',')[0].strip()
-        target_display = target_version.split(',')[0].strip()
+        source_display = source_version.strip()
+        target_display = target_version.strip()
         
         simplified_records.append({
             "Cluster Name": entry.get("cluster_name", "N/A"),

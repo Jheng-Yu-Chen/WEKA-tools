@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 import json
 import fnmatch
@@ -22,7 +23,8 @@ def parse_args():
     parser.add_argument("--cluster", default="*", help="Cluster Name")
     parser.add_argument("--cpu_is_dedicated", type=str, choices=['true', 'false', 'udp'], help="Filter by CPU dedicated status of nodes (true/false/udp)")
     parser.add_argument("--cluster_name", default="*", help="Filter by cluster.name (e.g., my_cluster_name)")
-    parser.add_argument("--net_device", default="*", help="Filter by network device name (e.g., MT28908*)") # Updated help message
+    parser.add_argument("--net_device", default="*", help="Filter by network device name (e.g., MT28908*)")
+    parser.add_argument("--link_layer", default="*", help="Filter by link layer (e.g., ETH*)") # Added --link_layer
     return parser.parse_args(), sys.argv
 
 def main():
@@ -40,6 +42,7 @@ def main():
     show_cpu_is_dedicated = "--cpu_is_dedicated" in raw_args
     show_cluster_name = "--cluster_name" in raw_args
     show_net_device = "--net_device" in raw_args
+    show_link_layer = "--link_layer" in raw_args # Added show_link_layer
 
     flag_map = {
         "--kernel": "kernel",
@@ -52,7 +55,8 @@ def main():
         "--cluster": "cluster",
         "--cpu_is_dedicated": "cpu_is_dedicated_status",
         "--cluster_name": "cluster_name",
-        "--net_device": "net_device_name" # Changed internal key for clarity
+        "--net_device": "net_device_name",
+        "--link_layer": "link_layer" # Added link_layer to flag_map
     }
 
     # Define display labels for output
@@ -67,7 +71,8 @@ def main():
         "cluster": "Cluster Name",
         "cpu_is_dedicated_status": "CPU Dedicated",
         "cluster_name": "Cluster Name",
-        "net_device_name": "Network Device Name" # Updated display label
+        "net_device_name": "Network Device Name",
+        "link_layer": "Link Layer" # Added link_layer to display_label_map
     }
     
     # Define mapping for 'true'/'false'/'udp' values for display
@@ -92,6 +97,7 @@ def main():
 
             customer = obj.get("_meta", {}).get("customer_name", "")
             cluster_name_field = obj.get("cluster", {}).get("name", "")
+            link_layer = obj.get("cluster", {}).get("link_layer", "") # Added link_layer extraction
 
             # Store hosts and nodes in lookup dictionaries for easier access
             hosts_by_id = {h['id']: h for h in obj.get("host", {}).get("hosts", [])}
@@ -131,7 +137,8 @@ def main():
                     match(platform, args.platform) and
                     match(mode, args.mode) and
                     match(customer, args.customer) and
-                    match(cluster, args.cluster)
+                    match(cluster, args.cluster) and
+                    match(link_layer, args.link_layer) # Added link_layer filter
                 ):
                     continue
 
@@ -158,10 +165,10 @@ def main():
                         host_has_matching_net_device_name = False
                         associated_net_devices = net_devices_by_host_id.get(host_id, [])
                         for net_device_data in associated_net_devices:
-                            net_device_name = net_device_data.get('device', '') # Changed from 'driver' to 'device'
+                            net_device_name = net_device_data.get('device', '')
                             if match(net_device_name, args.net_device):
                                 host_has_matching_net_device_name = True
-                                matched_net_device_name_value = net_device_name # Capture the value
+                                matched_net_device_name_value = net_device_name
                                 break
                         if not host_has_matching_net_device_name:
                             passed_net_device_filter = False
@@ -186,15 +193,13 @@ def main():
                         if filter_type == 'true':
                             target_cpu_dedicated_bool = True
                             node_cpu_dedicated_val = node_data.get('cpu_is_dedicated')
-                            if (node_cpu_dedicated_val is not None and node_cpu_dedicated_val == target_cpu_dedicated_bool) and \
-                               (node_is_dpdk is not None and node_is_dpdk == True):
+                            if (node_cpu_dedicated_val is not None and node_cpu_dedicated_val == target_cpu_dedicated_bool) and                                (node_is_dpdk is not None and node_is_dpdk == True):
                                 host_has_matching_node_for_cpu_dedication = True
                                 break
                         elif filter_type == 'false':
                             target_cpu_dedicated_bool = False
                             node_cpu_dedicated_val = node_data.get('cpu_is_dedicated')
-                            if (node_cpu_dedicated_val is not None and node_cpu_dedicated_val == target_cpu_dedicated_bool) and \
-                               (node_is_dpdk is not None and node_is_dpdk == True):
+                            if (node_cpu_dedicated_val is not None and node_cpu_dedicated_val == target_cpu_dedicated_bool) and                                (node_is_dpdk is not None and node_is_dpdk == True):
                                 host_has_matching_node_for_cpu_dedication = True
                                 break
                         elif filter_type == 'udp':
@@ -217,18 +222,19 @@ def main():
                     "mode": mode,
                     "customer": customer,
                     "cluster": cluster,
-                    "cluster_name": cluster_name_field
+                    "cluster_name": cluster_name_field,
+                    "link_layer": link_layer # Added link_layer to matched_entry
                 }
                 
                 if args.cpu_is_dedicated is not None:
                     matched_entry["cpu_is_dedicated_status"] = cpu_dedicated_display_map.get(args.cpu_is_dedicated.lower(), args.cpu_is_dedicated.lower())
                 
                 if args.net_device is not None:
-                    matched_entry["net_device_name"] = matched_net_device_name_value # Add the captured device name
+                    matched_entry["net_device_name"] = matched_net_device_name_value
                 
                 matched.append(matched_entry)
 
-    print(f"\U0001F50D Filtering:")
+    print(f"🔍 Filtering:")
     if show_kernel:
         print(f"  - Kernel release   : {args.kernel}")
     if show_os:
@@ -248,22 +254,22 @@ def main():
     if show_cluster_name:
         print(f"  - Cluster Name     : {args.cluster_name}")
     if show_net_device:
-        print(f"  - Network Device   : {args.net_device}") # Display for new parameter
-    if show_cpu_is_dedicated:
-        print(f"  - CPU Dedicated    : {cpu_dedicated_display_map.get(args.cpu_is_dedicated.lower(), args.cpu_is_dedicated.lower())}")
+        print(f"  - Network Device   : {args.net_device}")
+    if show_link_layer:
+        print(f"  - Link Layer       : {args.link_layer}") # Added link_layer to filtering summary
 
-    print(f"\n\U0001F4CA Matched: {len(matched)} / {total} hosts")
+    print(f" 📊 Matched: {len(matched)} / {total} hosts")
 
     for key in combo_order:
         counter = Counter(m.get(key, '') for m in matched)
         if counter:
             label_to_print = display_label_map.get(key, key.capitalize())
-            if key in ["kernel", "ofed", "platform", "release", "net_device_name"]: # Changed key here
-                print(f"\n\U0001F4CE Top {label_to_print} Versions:")
+            if key in ["kernel", "ofed", "platform", "release", "net_device_name", "link_layer"]: # Added link_layer here
+                print(f"📎 Top {label_to_print} Versions:")
             elif key == "cpu_is_dedicated_status":
-                print(f"\n\U0001F4CE Top {label_to_print} Status:")
+                print(f"📎 Top {label_to_print} Status:")
             else:
-                print(f"\n\U0001F4CE Top {label_to_print}s:")
+                print(f"📎 Top {label_to_print}s:")
             
             for val, count in counter.most_common():
                 print(f"    {count} × {val}")
@@ -272,7 +278,7 @@ def main():
         combo = Counter(" | ".join(str(m.get(key, '')) for key in combo_order) for m in matched)
         if combo:
             title = " + ".join(display_label_map[key] for key in combo_order)
-            print(f"\n\U0001F4CE {title} combinations:")
+            print(f"📎 {title} combinations:")
             for item, c in combo.most_common():
                 print(f"    {c} × {item}")
 

@@ -26,6 +26,8 @@ else
   echo "$(hostname): warp client already running"
 fi'\'''
 
+sleep 3
+
 for size in $(sed 's/,/ /g' <<< "$object_size")
 do
   action=put

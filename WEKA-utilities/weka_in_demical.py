@@ -21,7 +21,7 @@ def human_si(n):
         i += 1
     return "{:.2f} {}".format(n, UNITS[i])
 
-def get_scale(name, default=1.4):
+def get_scale(name, default=1.0):
     v = os.environ.get(name, "")
     if not v:
         return float(default)
